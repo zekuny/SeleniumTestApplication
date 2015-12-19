@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Saving Property on :22 Oct 2015 10:45:27:443 PDT</comment>
+<entry key="Firefox.exe Location">/Applications/Firefox.app</entry>
+<entry key="App_Persistence_Media_DB_MySQL_Connection_Server">localhost</entry>
+<entry key="App_Persistence_Media_DB_MySQL_Password">458italia</entry>
+<entry key="Firefox Profile Dir">/Applications</entry>
+<entry key="IEDriver.exe Location">/Applications/Google Chrome.app</entry>
+<entry key="App_Persistence_Media_DB_MySQL_DB_Name">birt_db</entry>
+<entry key="App_Persistence_Media_DB_MySQL_Connection_Port">3306</entry>
+<entry key="Report Download Directory">/Users/zekuny/Desktop/BIReport</entry>
+<entry key="App_Resource_Bundle">resources/resourcebundle/BIRT_Resources_us_US</entry>
+<entry key="App_Persistence_Media">Persistence_DB_MySQL</entry>
+<entry key="App_Persistence_Media_DB_MySQL_Username">root</entry>
+<entry key="Report Archive Directory">/Users/zekuny/Desktop/BIReport</entry>
+</properties>

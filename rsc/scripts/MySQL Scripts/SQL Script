@@ -1,0 +1,242 @@
+CREATE DATABASE  IF NOT EXISTS `birt_db` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `birt_db`;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `birt_testsuite_testcase`
+--
+
+DROP TABLE IF EXISTS `birt_testsuite_testcase`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `birt_testsuite_testcase` (
+  `TestSuiteID` int(10) unsigned NOT NULL,
+  `TestCaseID` int(10) unsigned NOT NULL,
+  `ProjectID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`TestSuiteID`,`TestCaseID`,`ProjectID`),
+  KEY `TestSuite_TestCase_TestSuiteID` (`TestSuiteID`),
+  KEY `TestSuite_TestCase_TestCaseID` (`TestCaseID`),
+  KEY `TestSuite_TestCase_ProjectID` (`ProjectID`),
+  CONSTRAINT `TestSuite_TestCase_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `birt_project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `TestSuite_TestCase_TestCaseID` FOREIGN KEY (`TestCaseID`) REFERENCES `birt_testcase` (`TestCaseID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `TestSuite_TestCase_TestSuiteID` FOREIGN KEY (`TestSuiteID`) REFERENCES `birt_testsuite` (`TestSuiteID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='TestCases related to TestSuites';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `birt_testcase`
+--
+
+DROP TABLE IF EXISTS `birt_testcase`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `birt_testcase` (
+  `TestCaseID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `TestCaseName` varchar(150) NOT NULL,
+  `TestCaseDescription` varchar(500) NOT NULL,
+  `TypeOfBrowser` int(10) unsigned NOT NULL,
+  `BaseURL` varchar(500) NOT NULL,
+  `TestScriptID` int(10) unsigned DEFAULT NULL,
+  `QueryID` int(10) unsigned DEFAULT NULL,
+  `DBConnectionID` int(10) unsigned DEFAULT NULL,
+  `DownloadedFileType` int(10) unsigned NOT NULL,
+  `DownloadedFileName` varchar(255) NOT NULL,
+  `ReportHeaderLine` int(10) unsigned NOT NULL,
+  `DataStartLine` int(10) unsigned NOT NULL,
+  `ProjectID` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`TestCaseID`),
+  UNIQUE KEY `TestCaseName_UNIQUE` (`TestCaseName`),
+  KEY `ProjectID_TestCase` (`ProjectID`),
+  KEY `TestScriptID_TestCase` (`TestScriptID`),
+  KEY `QueryID_TestCase` (`QueryID`),
+  KEY `DBConnectionID_TestCase` (`DBConnectionID`),
+  CONSTRAINT `DBConnectionID_TestCase` FOREIGN KEY (`DBConnectionID`) REFERENCES `birt_dbconnection` (`DBConnection_ID`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `ProjectID_TestCase` FOREIGN KEY (`ProjectID`) REFERENCES `birt_project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `QueryID_TestCase` FOREIGN KEY (`QueryID`) REFERENCES `birt_query` (`QueryID`) ON DELETE SET NULL ON UPDATE SET NULL,
+  CONSTRAINT `TestScriptID_TestCase` FOREIGN KEY (`TestScriptID`) REFERENCES `birt_testscript` (`TestScriptID`) ON DELETE SET NULL ON UPDATE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Test Cases in BIRT Tool';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `birt_query`
+--
+
+DROP TABLE IF EXISTS `birt_query`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `birt_query` (
+  `QueryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `QueryName` varchar(150) NOT NULL,
+  `QueryDescription` varchar(500) NOT NULL,
+  `Query` text NOT NULL,
+  `ProjectID` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`QueryID`),
+  UNIQUE KEY `QueryName_UNIQUE` (`QueryName`),
+  KEY `ProjectID_Query` (`ProjectID`),
+  CONSTRAINT `ProjectID_Query` FOREIGN KEY (`ProjectID`) REFERENCES `birt_project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Query Details of BIRT Tool';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `birt_project`
+--
+
+DROP TABLE IF EXISTS `birt_project`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `birt_project` (
+  `ProjectID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ProjectName` varchar(150) NOT NULL,
+  `ProjectDescription` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`ProjectID`),
+  UNIQUE KEY `ProjectName_UNIQUE` (`ProjectName`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Project Details in BIRT Tool';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `birt_project`
+--
+
+LOCK TABLES `birt_project` WRITE;
+/*!40000 ALTER TABLE `birt_project` DISABLE KEYS */;
+INSERT INTO `birt_project` (`ProjectID`, `ProjectName`, `ProjectDescription`) VALUES (1,'Dummy','Dummy');
+/*!40000 ALTER TABLE `birt_project` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `birt_testsuite`
+--
+
+DROP TABLE IF EXISTS `birt_testsuite`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `birt_testsuite` (
+  `TestSuiteID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `TestSuiteName` varchar(150) NOT NULL,
+  `TestSuiteDescription` varchar(500) NOT NULL,
+  `ProjectID` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`TestSuiteID`),
+  UNIQUE KEY `TestSuiteName_UNIQUE` (`TestSuiteName`),
+  KEY `TestSuite_ProjectID` (`ProjectID`),
+  CONSTRAINT `TestSuite_ProjectID` FOREIGN KEY (`ProjectID`) REFERENCES `birt_project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Test Suite in BIRT Tool';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `birt_teststeps`
+--
+
+DROP TABLE IF EXISTS `birt_teststeps`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `birt_teststeps` (
+  `TestStepID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `SequenceNo` int(11) NOT NULL,
+  `Command` varchar(45) NOT NULL,
+  `Method` varchar(45) DEFAULT NULL,
+  `Target` varchar(500) DEFAULT NULL,
+  `Value` varchar(500) DEFAULT NULL,
+  `TestScriptID` int(10) unsigned DEFAULT NULL,
+  `ProjectID` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`TestStepID`),
+  KEY `TestScriptID_TestStep` (`TestScriptID`),
+  KEY `ProjectID_TestStep` (`ProjectID`),
+  CONSTRAINT `ProjectID_TestStep` FOREIGN KEY (`ProjectID`) REFERENCES `birt_project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `TestScriptID_TestStep` FOREIGN KEY (`TestScriptID`) REFERENCES `birt_testscript` (`TestScriptID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='TestSteps of BIRT Tool';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `birt_dbconnection`
+--
+
+DROP TABLE IF EXISTS `birt_dbconnection`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `birt_dbconnection` (
+  `DBConnection_ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ProjectID` int(10) unsigned DEFAULT NULL,
+  `DBConnectionName` varchar(150) NOT NULL,
+  `DBConnectionDescription` varchar(500) DEFAULT NULL,
+  `ConnectionType` int(10) unsigned NOT NULL,
+  `Username` varchar(150) NOT NULL,
+  `Password` varchar(150) NOT NULL,
+  `DatabaseName` varchar(150) DEFAULT NULL,
+  `DBConnectionString` varchar(255) NOT NULL,
+  PRIMARY KEY (`DBConnection_ID`),
+  UNIQUE KEY `DBConnectionName_UNIQUE` (`DBConnectionName`),
+  KEY `ProjectID` (`ProjectID`),
+  CONSTRAINT `ProjectID_DBConn` FOREIGN KEY (`ProjectID`) REFERENCES `birt_project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='DB Connections in BIRT Tool';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `birt_testscript`
+--
+
+DROP TABLE IF EXISTS `birt_testscript`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `birt_testscript` (
+  `TestScriptID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `TestScriptName` varchar(150) NOT NULL,
+  `TestScriptDescription` varchar(500) NOT NULL,
+  `ProjectID` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`TestScriptID`),
+  UNIQUE KEY `TestScriptName_UNIQUE` (`TestScriptName`),
+  KEY `ProjectID` (`ProjectID`),
+  CONSTRAINT `ProjectID_TestScript` FOREIGN KEY (`ProjectID`) REFERENCES `birt_project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Test Scripts of BIRT Tool';
+/*!40101 SET character_set_client = @saved_cs_client */
+
+--
+-- Table structure for table `birt_testsuiteresulthistory`
+--
+
+DROP TABLE IF EXISTS `birt_testsuiteresulthistory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `birt_testsuiteresulthistory` (
+  `TestSuiteResultHistoryID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ProjectID` int(10) unsigned NOT NULL,
+  `TestSuiteID` int(10) unsigned NOT NULL,
+  `TimeStamp` varchar(100) NOT NULL,
+  `NoOfTestCases` int(10) unsigned NOT NULL,
+  `NoOfTestCasePass` int(10) unsigned NOT NULL,
+  `NoOfTestCaseFail` int(10) unsigned NOT NULL,
+  `NoOfPassPercentage` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`TestSuiteResultHistoryID`),
+  KEY `TestSuite_TestSuiteHistory` (`TestSuiteID`),
+  KEY `ProjectID_TestSuiteHistory` (`ProjectID`),
+  CONSTRAINT `ProjectID_TestSuiteHistory` FOREIGN KEY (`ProjectID`) REFERENCES `birt_project` (`ProjectID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `TestSuite_TestSuiteHistory` FOREIGN KEY (`TestSuiteID`) REFERENCES `birt_testsuite` (`TestSuiteID`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='Result History of Test Suite in BIRT';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping events for database 'birt_db'
+--
+
+--
+-- Dumping routines for database 'birt_db'
+--
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2014-06-18 14:09:12
